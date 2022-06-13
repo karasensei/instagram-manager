@@ -1,0 +1,12 @@
+.DS_Store
+.idea
+.vscode
+vendor/
+*.iml
+*.out
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
