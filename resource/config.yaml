@@ -1,1 +1,21 @@
 app.name: instagram-manager
+
+instagram:
+  header:
+    authority:
+    accept:
+    accept-language:
+    cookie:
+    origin:
+    referer:
+    sec-ch-ua:
+    sec-ch-ua-mobile:
+    sec-ch-ua-platform:
+    sec-fetch-dest:
+    sec-fetch-mode:
+    sec-fetch-site:
+    user-agent:
+    x-asbd-id:
+    x-csrftoken:
+    x-ig-app-id:
+    x-ig-www-claim:
