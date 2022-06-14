@@ -1,4 +1,4 @@
-package model
+package user
 
 type User struct {
 	Pk        int    `json:"pk"`

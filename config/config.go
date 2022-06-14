@@ -3,17 +3,14 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"net/http"
 )
 
 type Config struct {
-	Client          *http.Client
 	InstagramHeader *InstagramHeader
 }
 
-func NewConfig(c *http.Client) *Config {
+func NewConfig() *Config {
 	return &Config{
-		Client:          c,
 		InstagramHeader: fillInstagramHeader(),
 	}
 }

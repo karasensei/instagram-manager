@@ -1,28 +1,27 @@
-package instagram
+package client
 
 import (
 	"encoding/json"
 	"instagram-manager/config"
-	"instagram-manager/infrastructure/client/instagram/model"
+	"instagram-manager/domain/model"
 	"io"
 	"net/http"
 	"strconv"
 )
 
-type InstagramClient interface {
-	GetFollowers(count int, nextToken string, linkType string) (*model.Friendships, error)
-	GetFollowings(count int, nextToken string) (*model.Friendships, error)
+type InstagramClient struct {
+	c    *http.Client
+	conf *config.Config
 }
 
-type instagramClient struct {
-	c *config.Config
+func NewInstagramClient(c *http.Client, conf *config.Config) *InstagramClient {
+	return &InstagramClient{
+		c:    c,
+		conf: conf,
+	}
 }
 
-func NewInstagramClient(c *config.Config) *instagramClient {
-	return &instagramClient{c: c}
-}
-
-func (i *instagramClient) GetFollowers(count int, nextToken string, linkType string) (*model.Friendships, error) {
+func (i *InstagramClient) GetFollowers(count int, nextToken string, linkType string) (*model.Friendships, error) {
 	url := "https://i.instagram.com/api/v1/friendships/3154886759/followers/?count=" + strconv.Itoa(count)
 	if nextToken != "" {
 		url = url + "&max_id=" + nextToken
@@ -31,8 +30,8 @@ func (i *instagramClient) GetFollowers(count int, nextToken string, linkType str
 		url = url + "&search_surface=" + linkType
 	}
 	req, _ := http.NewRequest("GET", url, nil)
-	addHeaders(req, i.c.InstagramHeader)
-	resp, _ := i.c.Client.Do(req)
+	addHeaders(req, i.conf.InstagramHeader)
+	resp, _ := i.c.Do(req)
 	if resp == nil {
 		return nil, nil
 	}
@@ -42,14 +41,14 @@ func (i *instagramClient) GetFollowers(count int, nextToken string, linkType str
 	return &friendships, nil
 }
 
-func (i *instagramClient) GetFollowings(count int, nextToken string) (*model.Friendships, error) {
+func (i *InstagramClient) GetFollowings(count int, nextToken string) (*model.Friendships, error) {
 	url := "https://i.instagram.com/api/v1/friendships/3154886759/following/?count=" + strconv.Itoa(count)
 	if nextToken != "" {
 		url = url + "&max_id=" + nextToken
 	}
 	req, _ := http.NewRequest("GET", url, nil)
-	addHeaders(req, i.c.InstagramHeader)
-	resp, _ := i.c.Client.Do(req)
+	addHeaders(req, i.conf.InstagramHeader)
+	resp, _ := i.c.Do(req)
 	if resp == nil {
 		return nil, nil
 	}
