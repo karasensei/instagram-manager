@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"os"
 )
 
 type Config struct {
@@ -16,8 +17,13 @@ func NewConfig() *Config {
 }
 
 func Init() {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
+	active := os.Getenv("ACTIVE")
+	if active == "" {
+		viper.SetConfigName("config")
+	} else {
+		viper.SetConfigName("config-" + active)
+	}
+	viper.SetConfigType("yml")
 	viper.AddConfigPath("./resource")
 	err := viper.ReadInConfig()
 	if err != nil {

@@ -21,7 +21,7 @@ func NewFriendshipsService(instagramClient instagramClient) *FriendshipsService 
 	}
 }
 
-func (f *FriendshipsService) GetFollowers1() *[]user.User {
+func (f *FriendshipsService) GetFollowers() *[]user.User {
 	var users []user.User
 	nextToken := ""
 	linkType := "follow_list_page"
