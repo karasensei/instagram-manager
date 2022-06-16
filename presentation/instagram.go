@@ -1,14 +1,14 @@
-package service
+package presentation
 
 import (
-	"instagram-manager/domain/model"
+	"instagram-manager/domain/instagram"
 	"log"
 )
 
 type instagramClient interface {
-	GetFollowers(count int, nextToken string, linkType string) (*model.Friendships, error)
-	GetFollowings(count int, nextToken string) (*model.Friendships, error)
-	GetProfileInfo(userName string) (*model.ProfileInfo, error)
+	GetFollowers(count int, nextToken string, linkType string) (*instagram.Friendships, error)
+	GetFollowings(count int, nextToken string) (*instagram.Friendships, error)
+	GetProfileInfo(userName string) (*instagram.ProfileInfo, error)
 }
 
 type InstagramService struct {
@@ -21,8 +21,8 @@ func NewInstagramService(instagramClient instagramClient) *InstagramService {
 	}
 }
 
-func (f *InstagramService) GetFollowers() *[]model.Follow {
-	var fw []model.Follow
+func (f *InstagramService) GetFollowers() *[]instagram.Follow {
+	var fw []instagram.Follow
 	nextToken := ""
 	linkType := "follow_list_page"
 	for {
@@ -42,8 +42,8 @@ func (f *InstagramService) GetFollowers() *[]model.Follow {
 	return &fw
 }
 
-func (f *InstagramService) GetFollowing() *[]model.Follow {
-	var fw []model.Follow
+func (f *InstagramService) GetFollowing() *[]instagram.Follow {
+	var fw []instagram.Follow
 	nextToken := ""
 	for {
 		friendships, err := f.instagramClient.GetFollowings(12, nextToken)
@@ -62,7 +62,7 @@ func (f *InstagramService) GetFollowing() *[]model.Follow {
 	return &fw
 }
 
-func (f *InstagramService) GetProfileInfo(userName string) *model.ProfileInfo {
+func (f *InstagramService) GetProfileInfo(userName string) *instagram.ProfileInfo {
 	profileInfo, _ := f.instagramClient.GetProfileInfo(userName)
 	return profileInfo
 }

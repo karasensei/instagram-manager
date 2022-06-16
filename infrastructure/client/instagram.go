@@ -3,7 +3,7 @@ package client
 import (
 	"encoding/json"
 	"instagram-manager/config"
-	"instagram-manager/domain/model"
+	"instagram-manager/domain/instagram"
 	"io"
 	"net/http"
 	"strconv"
@@ -21,7 +21,7 @@ func NewInstagramClient(c *http.Client, conf *config.Config) *InstagramClient {
 	}
 }
 
-func (i *InstagramClient) GetFollowers(count int, nextToken string, linkType string) (*model.Friendships, error) {
+func (i *InstagramClient) GetFollowers(count int, nextToken string, linkType string) (*instagram.Friendships, error) {
 	url := "https://i.instagram.com/api/v1/friendships/3154886759/followers/?count=" + strconv.Itoa(count)
 	if nextToken != "" {
 		url = url + "&max_id=" + nextToken
@@ -36,12 +36,12 @@ func (i *InstagramClient) GetFollowers(count int, nextToken string, linkType str
 		return nil, nil
 	}
 	bytes, _ := io.ReadAll(resp.Body)
-	friendships := model.Friendships{}
+	friendships := instagram.Friendships{}
 	json.Unmarshal(bytes, &friendships)
 	return &friendships, nil
 }
 
-func (i *InstagramClient) GetFollowings(count int, nextToken string) (*model.Friendships, error) {
+func (i *InstagramClient) GetFollowings(count int, nextToken string) (*instagram.Friendships, error) {
 	url := "https://i.instagram.com/api/v1/friendships/3154886759/following/?count=" + strconv.Itoa(count)
 	if nextToken != "" {
 		url = url + "&max_id=" + nextToken
@@ -53,12 +53,12 @@ func (i *InstagramClient) GetFollowings(count int, nextToken string) (*model.Fri
 		return nil, nil
 	}
 	bytes, _ := io.ReadAll(resp.Body)
-	friendships := model.Friendships{}
+	friendships := instagram.Friendships{}
 	json.Unmarshal(bytes, &friendships)
 	return &friendships, nil
 }
 
-func (i *InstagramClient) GetProfileInfo(userName string) (*model.ProfileInfo, error) {
+func (i *InstagramClient) GetProfileInfo(userName string) (*instagram.ProfileInfo, error) {
 	url := "https://i.instagram.com/api/v1/users/web_profile_info/?username=" + userName
 	req, _ := http.NewRequest("GET", url, nil)
 	addHeaders(req, i.conf.InstagramHeader)
@@ -67,7 +67,7 @@ func (i *InstagramClient) GetProfileInfo(userName string) (*model.ProfileInfo, e
 		return nil, nil
 	}
 	bytes, _ := io.ReadAll(resp.Body)
-	profileInfo := model.ProfileInfo{}
+	profileInfo := instagram.ProfileInfo{}
 	json.Unmarshal(bytes, &profileInfo)
 	return &profileInfo, nil
 }

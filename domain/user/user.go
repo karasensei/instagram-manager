@@ -3,7 +3,7 @@ package user
 import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"instagram-manager/domain/model"
+	"instagram-manager/domain/instagram"
 )
 
 type UserType string
@@ -26,7 +26,7 @@ type User struct {
 	Type            UserType           `bson:"Type"`
 }
 
-func Convert(f model.Follow, p model.ProfileInfo, userType UserType) bson.M {
+func Convert(f instagram.Follow, p instagram.ProfileInfo, userType UserType) bson.M {
 	return bson.M{
 		"InstagramId":     f.Pk,
 		"ProfilePicUrlHd": p.Data.User.ProfilePicUrlHd,
