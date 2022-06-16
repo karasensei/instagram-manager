@@ -19,3 +19,6 @@ instagram:
     x-csrftoken:
     x-ig-app-id:
     x-ig-www-claim:
+
+mongo:
+  url:

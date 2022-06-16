@@ -1,18 +1,24 @@
 package config
 
 import (
+	"context"
 	"fmt"
 	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
+	"time"
 )
 
 type Config struct {
 	InstagramHeader *InstagramHeader
+	MongoClient     *mongo.Client
 }
 
 func NewConfig() *Config {
 	return &Config{
 		InstagramHeader: fillInstagramHeader(),
+		MongoClient:     initialMongoDB(),
 	}
 }
 
@@ -71,4 +77,17 @@ func fillInstagramHeader() *InstagramHeader {
 		viper.GetString("instagram.header.x-ig-app-id"),
 		viper.GetString("instagram.header.x-ig-www-claim"),
 	}
+}
+
+func initialMongoDB() *mongo.Client {
+	mongoClient, err := mongo.NewClient(options.Client().ApplyURI(viper.GetString("mongo.url")))
+	if err != nil {
+		panic(fmt.Errorf("Fatal error not new mongo client created: %w \n", err))
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = mongoClient.Connect(ctx)
+	if err != nil {
+		panic(fmt.Errorf("Fatal error mongo client not connected: %w \n", err))
+	}
+	return mongoClient
 }

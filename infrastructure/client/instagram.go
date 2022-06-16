@@ -58,6 +58,20 @@ func (i *InstagramClient) GetFollowings(count int, nextToken string) (*model.Fri
 	return &friendships, nil
 }
 
+func (i *InstagramClient) GetProfileInfo(userName string) (*model.ProfileInfo, error) {
+	url := "https://i.instagram.com/api/v1/users/web_profile_info/?username=" + userName
+	req, _ := http.NewRequest("GET", url, nil)
+	addHeaders(req, i.conf.InstagramHeader)
+	resp, _ := i.c.Do(req)
+	if resp == nil {
+		return nil, nil
+	}
+	bytes, _ := io.ReadAll(resp.Body)
+	profileInfo := model.ProfileInfo{}
+	json.Unmarshal(bytes, &profileInfo)
+	return &profileInfo, nil
+}
+
 func addHeaders(req *http.Request, header *config.InstagramHeader) {
 	req.Header.Add("authority", header.Authority)
 	req.Header.Add("accept", header.Accept)
