@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"instagram-manager/application/app"
 	"instagram-manager/config"
 	"instagram-manager/domain/user"
 	"instagram-manager/infrastructure/client"
@@ -19,8 +20,9 @@ func main() {
 	userRepository := persistance.NewUserRepository(conf.MongoClient)
 	userService := presentation.NewUserService(userRepository)
 	instagramService := presentation.NewInstagramService(instagramClient)
+	app.NewUserController(userService, instagramService)
+	http.ListenAndServe(":8090", nil)
 	//1.Step Get all following my friends
-	saveAllFollowings(instagramService, userService)
 	//2.Step Withdrawal of friends of all followers whose number of friends is less than 1000
 	//3.Step Send friend requests to recently pulled friends who have more than 10 mutual friends
 }
