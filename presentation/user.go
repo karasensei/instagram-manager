@@ -23,6 +23,6 @@ func (u *UserService) Save(user bson.M) error {
 	return u.userRepository.Save(user)
 }
 
-func (u *UserService) isExistsById(id int) bool {
+func (u *UserService) IsExistsById(id int) bool {
 	return u.userRepository.ExistsUserById(id)
 }

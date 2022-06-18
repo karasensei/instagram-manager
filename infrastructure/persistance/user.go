@@ -29,8 +29,11 @@ func (u *UserRepository) ExistsUserById(id int) bool {
 	collection := u.mongoClient.Database("instagramManager").Collection("users")
 	ctx, cancel := context.WithTimeout(context.TODO(), 15*time.Second)
 	defer cancel()
-	singleResult := collection.FindOne(ctx, bson.M{"InstagramId": id})
-	if singleResult == nil {
+	count, err := collection.CountDocuments(ctx, bson.M{"InstagramId": id})
+	if err != nil {
+		panic(err)
+	}
+	if count == 0 {
 		return false
 	}
 	return true
