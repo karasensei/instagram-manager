@@ -41,8 +41,8 @@ func (i *InstagramClient) GetFollowers(count int, nextToken string, linkType str
 	return &friendships, nil
 }
 
-func (i *InstagramClient) GetFollowings(count int, nextToken string) (*instagram.Friendships, error) {
-	url := "https://i.instagram.com/api/v1/friendships/3154886759/following/?count=" + strconv.Itoa(count)
+func (i *InstagramClient) GetFollowings(count int, nextToken string, userId int) (*instagram.Friendships, error) {
+	url := "https://i.instagram.com/api/v1/friendships/" + strconv.Itoa(userId) + "/following/?count=" + strconv.Itoa(count)
 	if nextToken != "" {
 		url = url + "&max_id=" + nextToken
 	}
@@ -58,8 +58,8 @@ func (i *InstagramClient) GetFollowings(count int, nextToken string) (*instagram
 	return &friendships, nil
 }
 
-func (i *InstagramClient) GetProfileInfo(userName string) (*instagram.ProfileInfo, error) {
-	url := "https://i.instagram.com/api/v1/users/web_profile_info/?username=" + userName
+func (i *InstagramClient) GetProfileInfo(userId int) (*instagram.ProfileInfo, error) {
+	url := "https://i.instagram.com/api/v1/users/" + strconv.Itoa(userId) + "/info/"
 	req, _ := http.NewRequest("GET", url, nil)
 	addHeaders(req, i.conf.InstagramHeader)
 	resp, _ := i.c.Do(req)

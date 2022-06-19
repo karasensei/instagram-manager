@@ -15,26 +15,28 @@ const (
 )
 
 type User struct {
-	ID              primitive.ObjectID `bson:"_id"`
-	InstagramId     int                `bson:"InstagramId"`
-	ProfilePicUrlHd string             `bson:"ProfilePicUrlHd"`
-	UserName        string             `bson:"UserName"`
-	FullName        string             `bson:"FullName"`
-	IsPrivate       bool               `bson:"IsPrivate"`
-	Followers       int                `bson:"Followers"`
-	Following       int                `bson:"Following"`
-	Type            UserType           `bson:"Type"`
+	ID                   primitive.ObjectID `bson:"_id"`
+	InstagramId          int                `bson:"InstagramId"`
+	ProfilePicUrlHd      string             `bson:"ProfilePicUrlHd"`
+	UserName             string             `bson:"UserName"`
+	FullName             string             `bson:"FullName"`
+	IsPrivate            bool               `bson:"IsPrivate"`
+	FollowersCount       int                `bson:"FollowersCount"`
+	FollowingCount       int                `bson:"FollowingCount"`
+	Type                 UserType           `bson:"Type"`
+	MutualFollowersCount int                `bson:"MutualFollowersCount"`
 }
 
 func Convert(f instagram.Follow, p instagram.ProfileInfo, userType UserType) bson.M {
 	return bson.M{
-		"InstagramId":     f.Pk,
-		"ProfilePicUrlHd": p.Data.User.ProfilePicUrlHd,
-		"UserName":        f.UserName,
-		"FullName":        f.FullName,
-		"IsPrivate":       f.IsPrivate,
-		"Followers":       p.Data.User.Followers.Count,
-		"Following":       p.Data.User.Following.Count,
-		"Type":            userType,
+		"InstagramId":          f.Pk,
+		"ProfilePicUrlHd":      p.User.ProfilePicUrlHd,
+		"UserName":             f.UserName,
+		"FullName":             f.FullName,
+		"IsPrivate":            f.IsPrivate,
+		"Followers":            p.User.FollowersCount,
+		"Following":            p.User.FollowingCount,
+		"Type":                 userType,
+		"MutualFollowersCount": p.User.MutualFollowersCount,
 	}
 }

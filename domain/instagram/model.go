@@ -15,19 +15,16 @@ type Follow struct {
 }
 
 type ProfileInfo struct {
-	Data ProfileInfoData `json:"data"`
-}
-
-type ProfileInfoData struct {
 	User ProfileInfoUser `json:"user"`
 }
 
 type ProfileInfoUser struct {
-	Following       CountInfo `json:"edge_follow"`
-	Followers       CountInfo `json:"edge_followed_by"`
-	ProfilePicUrlHd string    `json:"profile_pic_url_hd"`
+	FollowingCount       int            `json:"following_count"`
+	FollowersCount       int            `json:"follower_count"`
+	ProfilePicUrlHd      ProfilePicInfo `json:"hd_profile_pic_url_info"`
+	MutualFollowersCount int            `json:"mutual_followers_count"`
 }
 
-type CountInfo struct {
-	Count int `json:"count"`
+type ProfilePicInfo struct {
+	Url string `json:"url"`
 }

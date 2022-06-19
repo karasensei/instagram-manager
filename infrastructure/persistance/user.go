@@ -4,6 +4,8 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"instagram-manager/domain/user"
+	"log"
 	"time"
 )
 
@@ -37,4 +39,26 @@ func (u *UserRepository) ExistsUserById(id int) bool {
 		return false
 	}
 	return true
+}
+
+func (u *UserRepository) GetAllUsers(f user.UserFilter) []user.User {
+	collection := u.mongoClient.Database("instagramManager").Collection("users")
+	ctx, cancel := context.WithTimeout(context.TODO(), 15*time.Second)
+	defer cancel()
+	cur, err := collection.Find(ctx, bson.D{})
+	if err != nil {
+		panic(err)
+	}
+	defer cur.Close(ctx)
+	var users []user.User
+	for cur.Next(context.TODO()) {
+		var user user.User
+		err := cur.Decode(&user)
+		if err != nil {
+			log.Fatalln(err)
+			continue
+		}
+		users = append(users, user)
+	}
+	return users
 }

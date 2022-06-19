@@ -7,8 +7,8 @@ import (
 
 type instagramClient interface {
 	GetFollowers(count int, nextToken string, linkType string) (*instagram.Friendships, error)
-	GetFollowings(count int, nextToken string) (*instagram.Friendships, error)
-	GetProfileInfo(userName string) (*instagram.ProfileInfo, error)
+	GetFollowings(count int, nextToken string, userId int) (*instagram.Friendships, error)
+	GetProfileInfo(userId int) (*instagram.ProfileInfo, error)
 }
 
 type InstagramService struct {
@@ -42,11 +42,11 @@ func (f *InstagramService) GetFollowers() *[]instagram.Follow {
 	return &fw
 }
 
-func (f *InstagramService) GetFollowing() *[]instagram.Follow {
+func (f *InstagramService) GetFollowing(userId int) *[]instagram.Follow {
 	var fw []instagram.Follow
 	nextToken := ""
 	for {
-		friendships, err := f.instagramClient.GetFollowings(12, nextToken)
+		friendships, err := f.instagramClient.GetFollowings(12, nextToken, userId)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -62,7 +62,7 @@ func (f *InstagramService) GetFollowing() *[]instagram.Follow {
 	return &fw
 }
 
-func (f *InstagramService) GetProfileInfo(userName string) *instagram.ProfileInfo {
-	profileInfo, _ := f.instagramClient.GetProfileInfo(userName)
+func (f *InstagramService) GetProfileInfo(userId int) *instagram.ProfileInfo {
+	profileInfo, _ := f.instagramClient.GetProfileInfo(userId)
 	return profileInfo
 }

@@ -2,11 +2,13 @@ package presentation
 
 import (
 	"go.mongodb.org/mongo-driver/bson"
+	"instagram-manager/domain/user"
 )
 
 type userRepository interface {
 	Save(user bson.M) error
 	ExistsUserById(id int) bool
+	GetAllUsers(f user.UserFilter) []user.User
 }
 
 type UserService struct {
@@ -25,4 +27,8 @@ func (u *UserService) Save(user bson.M) error {
 
 func (u *UserService) IsExistsById(id int) bool {
 	return u.userRepository.ExistsUserById(id)
+}
+
+func (u *UserService) GetAllUsers(f user.UserFilter) []user.User {
+	return u.userRepository.GetAllUsers(f)
 }
