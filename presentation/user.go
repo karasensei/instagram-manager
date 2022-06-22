@@ -8,7 +8,7 @@ import (
 type userRepository interface {
 	Save(user bson.M) error
 	ExistsUserById(id int) bool
-	GetAllUsers(f user.UserFilter) []user.User
+	GetAllUsers(f user.Filter) []user.User
 }
 
 type UserService struct {
@@ -29,6 +29,6 @@ func (u *UserService) IsExistsById(id int) bool {
 	return u.userRepository.ExistsUserById(id)
 }
 
-func (u *UserService) GetAllUsers(f user.UserFilter) []user.User {
+func (u *UserService) GetAllUsers(f user.Filter) []user.User {
 	return u.userRepository.GetAllUsers(f)
 }

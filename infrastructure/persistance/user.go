@@ -41,7 +41,7 @@ func (u *UserRepository) ExistsUserById(id int) bool {
 	return true
 }
 
-func (u *UserRepository) GetAllUsers(f user.UserFilter) []user.User {
+func (u *UserRepository) GetAllUsers(f user.Filter) []user.User {
 	collection := u.mongoClient.Database("instagramManager").Collection("users")
 	ctx, cancel := context.WithTimeout(context.TODO(), 15*time.Second)
 	defer cancel()

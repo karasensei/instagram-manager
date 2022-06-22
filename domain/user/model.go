@@ -1,6 +1,6 @@
 package user
 
-type UserFilter struct {
+type Filter struct {
 	Page int
 	Size int
 }
