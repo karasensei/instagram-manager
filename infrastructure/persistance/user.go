@@ -16,8 +16,8 @@ type UserRepository struct {
 func NewUserRepository(mongoClient *mongo.Client) *UserRepository {
 	return &UserRepository{mongoClient: mongoClient}
 }
-func (u *UserRepository) Save(user bson.M) error {
-	collection := u.mongoClient.Database("instagramManager").Collection("users")
+func (ur *UserRepository) Save(user bson.M) error {
+	collection := ur.mongoClient.Database("instagramManager").Collection("users")
 	ctx, cancel := context.WithTimeout(context.TODO(), 15*time.Second)
 	defer cancel()
 	_, err := collection.InsertOne(ctx, user)
@@ -27,11 +27,11 @@ func (u *UserRepository) Save(user bson.M) error {
 	return nil
 }
 
-func (u *UserRepository) ExistsUserById(id int) bool {
-	collection := u.mongoClient.Database("instagramManager").Collection("users")
+func (ur *UserRepository) ExistsByInstagramId(instagramId int) bool {
+	collection := ur.mongoClient.Database("instagramManager").Collection("users")
 	ctx, cancel := context.WithTimeout(context.TODO(), 15*time.Second)
 	defer cancel()
-	count, err := collection.CountDocuments(ctx, bson.M{"InstagramId": id})
+	count, err := collection.CountDocuments(ctx, bson.M{"InstagramId": instagramId})
 	if err != nil {
 		panic(err)
 	}
@@ -41,8 +41,8 @@ func (u *UserRepository) ExistsUserById(id int) bool {
 	return true
 }
 
-func (u *UserRepository) GetAllUsers(f user.Filter) []user.User {
-	collection := u.mongoClient.Database("instagramManager").Collection("users")
+func (ur *UserRepository) GetAllUsers(f user.Filter) []user.User {
+	collection := ur.mongoClient.Database("instagramManager").Collection("users")
 	ctx, cancel := context.WithTimeout(context.TODO(), 15*time.Second)
 	defer cancel()
 	cur, err := collection.Find(ctx, bson.D{})
@@ -61,4 +61,12 @@ func (u *UserRepository) GetAllUsers(f user.Filter) []user.User {
 		users = append(users, user)
 	}
 	return users
+}
+
+func (ur *UserRepository) Update(u *user.User) error {
+	collection := ur.mongoClient.Database("instagramManager").Collection("users")
+	ctx, cancel := context.WithTimeout(context.TODO(), 15*time.Second)
+	defer cancel()
+	_, err := collection.UpdateByID(ctx, u.ID, user.GetBson(*u))
+	return err
 }

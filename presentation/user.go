@@ -7,8 +7,9 @@ import (
 
 type userRepository interface {
 	Save(user bson.M) error
-	ExistsUserById(id int) bool
+	ExistsByInstagramId(id int) bool
 	GetAllUsers(f user.Filter) []user.User
+	Update(u *user.User) error
 }
 
 type UserService struct {
@@ -25,10 +26,14 @@ func (u *UserService) Save(user bson.M) error {
 	return u.userRepository.Save(user)
 }
 
-func (u *UserService) IsExistsById(id int) bool {
-	return u.userRepository.ExistsUserById(id)
+func (u *UserService) IsExistsByInstagramId(id int) bool {
+	return u.userRepository.ExistsByInstagramId(id)
 }
 
 func (u *UserService) GetAllUsers(f user.Filter) []user.User {
 	return u.userRepository.GetAllUsers(f)
+}
+
+func (u *UserService) Update(user *user.User) error {
+	return u.userRepository.Update(user)
 }

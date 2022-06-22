@@ -25,10 +25,10 @@ type User struct {
 	FollowingCount       int                `bson:"FollowingCount"`
 	Type                 UserType           `bson:"Type"`
 	MutualFollowersCount int                `bson:"MutualFollowersCount"`
-	Import               bool               `bson:"Import"`
+	IsImport             bool               `bson:"IsImport"`
 }
 
-func Convert(f instagram.Follow, p instagram.ProfileInfo, userType UserType) bson.M {
+func ConvertBson(f instagram.Follow, p instagram.ProfileInfo, userType UserType) bson.M {
 	return bson.M{
 		"InstagramId":          f.Pk,
 		"ProfilePicUrlHd":      p.User.ProfilePicUrlHd.Url,
@@ -39,6 +39,21 @@ func Convert(f instagram.Follow, p instagram.ProfileInfo, userType UserType) bso
 		"Following":            p.User.FollowingCount,
 		"Type":                 userType,
 		"MutualFollowersCount": p.User.MutualFollowersCount,
-		"Import":               false,
+		"IsImport":             false,
+	}
+}
+
+func GetBson(u User) bson.M {
+	return bson.M{
+		"InstagramId":          u.InstagramId,
+		"ProfilePicUrlHd":      u.ProfilePicUrlHd,
+		"UserName":             u.UserName,
+		"FullName":             u.FullName,
+		"IsPrivate":            u.IsPrivate,
+		"FollowersCount":       u.FollowersCount,
+		"FollowingCount":       u.FollowingCount,
+		"Type":                 u.Type,
+		"MutualFollowersCount": u.MutualFollowersCount,
+		"IsImport":             u.IsImport,
 	}
 }

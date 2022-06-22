@@ -10,7 +10,6 @@ import (
 	"instagram-manager/presentation"
 	"net/http"
 	"strconv"
-	"sync"
 )
 
 func main() {
@@ -35,12 +34,9 @@ func main() {
 func saveAllFollowings(instagramService *presentation.InstagramService, userService *presentation.UserService) {
 	fmt.Println("Save all my following friends started.")
 	followingFriends := instagramService.GetFollowing(3154886759)
-	wg := new(sync.WaitGroup)
 	for _, it := range *followingFriends {
-		wg.Add(len(*followingFriends))
-		go saveUser(instagramService, userService, &it, user.UserType_MY, wg)
+		saveUser(instagramService, userService, &it, user.UserType_MY)
 	}
-	wg.Wait()
 	fmt.Println("Save all my following friends finished.")
 }
 
@@ -48,7 +44,7 @@ func saveAllWithdrawalOfFriends(instagramService *presentation.InstagramService,
 	filter := user.Filter{}
 	users := userService.GetAllUsers(filter)
 	for _, element := range users {
-		if element.Import == true {
+		if element.IsImport == true {
 			fmt.Println("Already imported. UserName: " + element.UserName)
 			continue
 		}
@@ -62,32 +58,32 @@ func saveAllWithdrawalOfFriends(instagramService *presentation.InstagramService,
 			fmt.Println("userFollowingFriends is nil. UserName: " + element.UserName)
 			continue
 		}
-		wg := new(sync.WaitGroup)
 		for _, it := range *userFollowingFriends {
-			wg.Add(len(*userFollowingFriends))
-			go saveUser(instagramService, userService, &it, user.UserType_FOLLOWING, wg)
+			saveUser(instagramService, userService, &it, user.UserType_FOLLOWING)
 		}
-		wg.Wait()
+		element.IsImport = true
+		err := userService.Update(&element)
+		if err != nil {
+			fmt.Println("User not updated. UserName: " + element.UserName)
+			continue
+		}
 		fmt.Println("Save all " + element.UserName + " following friends finished.")
 	}
 }
 
-func saveUser(instagramService *presentation.InstagramService, userService *presentation.UserService, f *instagram.Follow, userType user.UserType, wg *sync.WaitGroup) {
-	isExists := userService.IsExistsById(f.Pk)
+func saveUser(instagramService *presentation.InstagramService, userService *presentation.UserService, f *instagram.Follow, userType user.UserType) {
+	isExists := userService.IsExistsByInstagramId(f.Pk)
 	if isExists {
 		fmt.Println("Friend already saved. Id: " + strconv.Itoa(f.Pk) + ", UserName: " + f.UserName)
-		wg.Done()
 		return
 	}
 	fmt.Println("Friend will be saving. Id: " + strconv.Itoa(f.Pk) + ", UserName: " + f.UserName)
 	profileInfo := instagramService.GetProfileInfo(f.Pk)
-	u := user.Convert(*f, *profileInfo, userType)
+	u := user.ConvertBson(*f, *profileInfo, userType)
 	err := userService.Save(u)
 	if err != nil {
 		fmt.Println("Friend not saving. Id: " + strconv.Itoa(f.Pk) + ", UserName: " + f.UserName)
-		wg.Done()
 		return
 	}
-	wg.Done()
 	fmt.Println("Friend saved. Id: " + strconv.Itoa(f.Pk) + ", UserName: " + f.UserName)
 }
