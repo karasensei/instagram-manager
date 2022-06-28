@@ -2,17 +2,24 @@ package main
 
 import (
 	"fmt"
+	"github.com/gofiber/fiber/v2"
+	"instagram-manager/application/app/controller"
 	"instagram-manager/config"
 	"instagram-manager/domain/instagram"
 	"instagram-manager/domain/user"
 	"instagram-manager/infrastructure/client"
 	"instagram-manager/infrastructure/persistance"
 	"instagram-manager/presentation"
+	"log"
 	"net/http"
 	"strconv"
 )
 
 func main() {
+	fc := fiber.Config{
+		AppName: "instagram-manager",
+	}
+	app := fiber.New(fc)
 	config.Init()
 	c := &http.Client{}
 	conf := config.NewConfig()
@@ -20,15 +27,17 @@ func main() {
 	userRepository := persistance.NewUserRepository(conf.MongoClient)
 	userService := presentation.NewUserService(userRepository)
 	instagramService := presentation.NewInstagramService(instagramClient)
+	controller.NewInstagramUserController(userService, instagramService, app)
+	log.Fatal(app.Listen("8080"))
+
 	//1.Step Get all following my friends
 	saveAllFollowings(instagramService, userService)
 	//2.Step Withdrawal of friends of all followers whose number of friends is less than 1000
 	saveAllWithdrawalOfFriends(instagramService, userService)
 	//3.Step Send friend requests to recently pulled friends who have more than 10 mutual friends
 	/* TODO: last version
-	app.NewUserController(userService, instagramService)
-	http.ListenAndServe(":8090", nil)
-	*/
+
+	 */
 }
 
 func saveAllFollowings(instagramService *presentation.InstagramService, userService *presentation.UserService) {

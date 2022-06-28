@@ -11,7 +11,7 @@ import (
 )
 
 type Config struct {
-	InstagramHeader *InstagramHeader
+	InstagramHeader InstagramHeader
 	MongoClient     *mongo.Client
 }
 
@@ -57,8 +57,8 @@ type InstagramHeader struct {
 	XIgWwwClaim     string
 }
 
-func fillInstagramHeader() *InstagramHeader {
-	return &InstagramHeader{
+func fillInstagramHeader() InstagramHeader {
+	return InstagramHeader{
 		viper.GetString("instagram.header.authority"),
 		viper.GetString("instagram.header.accept"),
 		viper.GetString("instagram.header.accept-language"),

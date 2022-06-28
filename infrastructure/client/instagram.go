@@ -72,7 +72,7 @@ func (i *InstagramClient) GetProfileInfo(userId int) (*instagram.ProfileInfo, er
 	return &profileInfo, nil
 }
 
-func addHeaders(req *http.Request, header *config.InstagramHeader) {
+func addHeaders(req *http.Request, header config.InstagramHeader) {
 	req.Header.Add("authority", header.Authority)
 	req.Header.Add("accept", header.Accept)
 	req.Header.Add("accept-language", header.AcceptLanguage)

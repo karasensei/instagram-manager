@@ -7,11 +7,17 @@ import (
 )
 
 type UserType string
+type FollowType string
 
 const (
 	UserType_MY        UserType = "MY"
 	UserType_FOLLOWERS          = "FOLLOWERS"
 	UserType_FOLLOWING          = "FOLLOWING"
+)
+
+const (
+	FollowType_FOLLOWERS FollowType = "FOLLOWERS"
+	FollowType_FOLLOWING            = "FOLLOWING"
 )
 
 type User struct {

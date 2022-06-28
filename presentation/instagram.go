@@ -21,7 +21,7 @@ func NewInstagramService(instagramClient instagramClient) *InstagramService {
 	}
 }
 
-func (f *InstagramService) GetFollowers() *[]instagram.Follow {
+func (f *InstagramService) GetAllFollower() *[]instagram.Follow {
 	var fw []instagram.Follow
 	nextToken := ""
 	linkType := "follow_list_page"
@@ -42,7 +42,7 @@ func (f *InstagramService) GetFollowers() *[]instagram.Follow {
 	return &fw
 }
 
-func (f *InstagramService) GetFollowing(userId int) *[]instagram.Follow {
+func (f *InstagramService) GetAllFollowing(userId int) *[]instagram.Follow {
 	var fw []instagram.Follow
 	nextToken := ""
 	for {
